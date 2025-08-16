@@ -919,7 +919,7 @@ class SmartTelegramBot:
             [Button.inline("Set Thumbnail", b'setthumb'), Button.inline("Remove Thumbnail", b'remthumb')],
             [Button.inline("PDF Watermark", b'pdfwt'), Button.inline("Video Watermark", b'watermark')],
             [Button.inline("Upload Method", b'uploadmethod')],
-            [Button.url("Report Issues", "https://t.me/team_spy_pro")]
+            [Button.url("Report Issues", "https://t.me/PdfsHubbb")]
         ]
         
         message = (
