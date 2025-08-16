@@ -33,7 +33,7 @@
     },    
     "FREEMIUM_LIMIT": {
       "description": "Batch size for free users",
-      "value": "0",
+      "value": "100",
       "required": true
     },
     "PREMIUM_LIMIT": {
