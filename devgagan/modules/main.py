@@ -231,7 +231,7 @@ async def batch_link(_, message):
     keyboard = InlineKeyboardMarkup([[join_button]])
     pin_msg = await app.send_message(
         user_id,
-        f"Batch process started ⚡\nProcessing: 0/{cl}\n\n**Powered by Team SPY**",
+        f"Batch process started ⚡\nProcessing: 0/{cl}\n\n**Powered by DARK SPY**",
         reply_markup=keyboard
     )
     await pin_msg.pin(both_sides=True)
