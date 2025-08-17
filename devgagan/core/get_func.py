@@ -805,19 +805,19 @@ class SmartTelegramBot:
         except RPCError as e:
             await app.edit_message_text(sender, edit_id, f"❌ Error: {e}")
 
-    async def _copy_public_message(self, app_client, userbot, sender: int, chat_id: str, message_id: int, edit_id: int):
+  async def _copy_public_message(self, app_client, userbot, sender: int, chat_id: str, message_id: int, edit_id: int):
         """Handle copying from public channels/groups"""
         target_chat_str = self.user_chat_ids.get(sender, str(sender))
         target_chat_id, topic_id = self.parse_target_chat(target_chat_str)
         file_path = None
         
         try:
-            # Try direct copy first
-            # Normalize chat_id for public links
-if isinstance(chat_id, str) and not chat_id.startswith("@") and not chat_id.startswith("-100"):
-    chat_id = f"@{chat_id}"
+            # ✅ Normalize chat_id for public links
+            if isinstance(chat_id, str) and not chat_id.startswith("@") and not chat_id.startswith("-100"):
+                chat_id = f"@{chat_id}"
 
-msg = await app_client.get_messages(chat_id, message_id)
+            # Try direct copy first
+            msg = await app_client.get_messages(chat_id, message_id)
             custom_caption = self.user_caption_prefs.get(str(sender), "")
             final_caption = await self._format_caption_with_custom(msg.caption or '', sender, custom_caption)
 
@@ -893,10 +893,14 @@ msg = await app_client.get_messages(chat_id, message_id)
 
         except Exception as e:
             print(f"Public message copy error: {e}")
+            try:
+                await app_client.send_message(sender, "❌ Failed to fetch public message. Channel may be private or inaccessible.")
+            except:
+                pass
         finally:
             if file_path:
                 await self.file_ops._cleanup_file(file_path)
-
+                
     async def _format_caption_with_custom(self, original_caption: str, sender: int, custom_caption: str) -> str:
         """Format caption with user preferences"""
         delete_words = set(self.db.get_user_data(sender, "delete_words", []))
