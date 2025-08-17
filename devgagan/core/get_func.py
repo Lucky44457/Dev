@@ -813,7 +813,11 @@ class SmartTelegramBot:
         
         try:
             # Try direct copy first
-            msg = await app_client.get_messages(chat_id, message_id)
+            # Normalize chat_id for public links
+if isinstance(chat_id, str) and not chat_id.startswith("@") and not chat_id.startswith("-100"):
+    chat_id = f"@{chat_id}"
+
+msg = await app_client.get_messages(chat_id, message_id)
             custom_caption = self.user_caption_prefs.get(str(sender), "")
             final_caption = await self._format_caption_with_custom(msg.caption or '', sender, custom_caption)
 
