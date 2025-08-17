@@ -806,92 +806,71 @@ class SmartTelegramBot:
             await app.edit_message_text(sender, edit_id, f"❌ Error: {e}")
 
     async def _copy_public_message(self, app_client, userbot, sender: int, chat_id: str, message_id: int, edit_id: int):
-        """Handle copying from public channels/groups"""
-        target_chat_str = self.user_chat_ids.get(sender, str(sender))
-        target_chat_id, topic_id = self.parse_target_chat(target_chat_str)
-        file_path = None
-        
+    """Handle copying from public channels/groups with fallback to userbot"""
+    target_chat_str = self.user_chat_ids.get(sender, str(sender))
+    target_chat_id, topic_id = self.parse_target_chat(target_chat_str)
+    file_path = None
+
+    try:
+        # 1) Try direct copy first
+        msg = await app_client.get_messages(chat_id, message_id)
+        replace_caption = msg.caption
+
+        # Apply replacement/caption settings if any
+        rep = self.user_caption_prefs.get(str(sender), "")
+        if rep and replace_caption:
+            replace_caption = replace_caption.replace(rep, "")
+
+        await app_client.copy_message(
+            target_chat_id,
+            msg.chat.id,
+            msg.id,
+            caption=replace_caption if replace_caption else None,
+            reply_to_message_id=topic_id
+        )
+        await app.delete_messages(sender, edit_id)
+        return
+
+    except Exception as e:
+        # 2) If restricted or copy failed → fallback to userbot
+        if not userbot:
+            await app_client.edit_message_text(sender, edit_id, f"❌ Copy failed & no userbot session.\nError: {e}")
+            return
+
         try:
-            # Try direct copy first
-            msg = await app_client.get_messages(chat_id, message_id)
-            custom_caption = self.user_caption_prefs.get(str(sender), "")
-            final_caption = await self._format_caption_with_custom(msg.caption or '', sender, custom_caption)
-
-            if msg.media and not msg.document and not msg.video:
-                # For photos and other simple media
-                if msg.photo:
-                    result = await app_client.send_photo(target_chat_id, msg.photo.file_id, caption=final_caption, reply_to_message_id=topic_id)
-                elif msg.video:
-                    result = await app_client.send_video(target_chat_id, msg.video.file_id, caption=final_caption, reply_to_message_id=topic_id)
-                elif msg.document:
-                    result = await app_client.send_document(target_chat_id, msg.document.file_id, caption=final_caption, reply_to_message_id=topic_id)
-                
-                if 'result' in locals():
-                    await result.copy(LOG_GROUP)
-                    await app.delete_messages(sender, edit_id)
-                    return
-
-            elif msg.text:
-                result = await app_client.copy_message(target_chat_id, chat_id, message_id, reply_to_message_id=topic_id)
-                await result.copy(LOG_GROUP)
-                await app.delete_messages(sender, edit_id)
+            edit_msg = await app_client.edit_message_text(sender, edit_id, "🔄 Restricted. Downloading with userbot...")
+            msg = await userbot.get_messages(chat_id, message_id)
+            if not msg:
+                await edit_msg.edit("❌ Message not found or inaccessible")
                 return
 
-            # If direct copy failed, try with userbot
-            if userbot:
-                edit_msg = await app.edit_message_text(sender, edit_id, "🔄 Trying alternative method...")
-                try:
-                    await userbot.join_chat(chat_id)
-                except:
-                    pass
-                
-                chat_id = (await userbot.get_chat(f"@{chat_id}")).id
-                msg = await userbot.get_messages(chat_id, message_id)
+            # Download media using userbot
+            file_path = await userbot.download_media(msg)
+            caption = msg.caption
 
-                if not msg or msg.service or msg.empty:
-                    await edit_msg.edit("❌ Message not found or inaccessible")
-                    return
+            # Apply replacements again
+            rep = self.user_caption_prefs.get(str(sender), "")
+            if rep and caption:
+                caption = caption.replace(rep, "")
 
-                if msg.text:
-                    await app_client.send_message(target_chat_id, msg.text.markdown, reply_to_message_id=topic_id)
-                    await edit_msg.delete()
-                    return
+            # Reupload with bot
+            if msg.photo:
+                await app_client.send_photo(target_chat_id, file_path, caption=caption, reply_to_message_id=topic_id)
+            elif msg.video:
+                await app_client.send_video(target_chat_id, file_path, caption=caption, reply_to_message_id=topic_id)
+            elif msg.document:
+                await app_client.send_document(target_chat_id, file_path, caption=caption, reply_to_message_id=topic_id)
+            else:
+                await app_client.send_message(target_chat_id, caption or "Unsupported message type")
 
-                # Download and upload media
-                final_caption = await self._format_caption_with_custom(msg.caption.markdown if msg.caption else "", sender, custom_caption)
-                
-                progress_args = ("Downloading...", edit_msg, time.time())
-                file_path = await userbot.download_media(msg, progress=progress_bar, progress_args=progress_args)
-                file_path = await self.file_ops.process_filename(file_path, sender)
+            await edit_msg.delete()
 
-                filename, file_size, media_type = self.media_processor.get_media_info(msg)
+        except Exception as e2:
+            await app_client.edit_message_text(sender, edit_id, f"❌ Userbot download failed: {e2}")
 
-                if media_type == "photo":
-                    result = await app_client.send_photo(target_chat_id, file_path, caption=final_caption, reply_to_message_id=topic_id)
-                elif file_size > self.config.SIZE_LIMIT:
-                    free_check = 0
-                    if 'chk_user' in globals():
-                        free_check = await chk_user(chat_id, sender)
-                    
-                    if free_check == 1 or not self.pro_client:
-                        await edit_msg.delete()
-                        await self.file_ops.split_large_file(file_path, app_client, sender, target_chat_id, final_caption, topic_id)
-                        return
-                    else:
-                        await self.handle_large_file_upload(file_path, sender, edit_msg, final_caption)
-                        return
-                else:
-                    upload_method = self.db.get_user_data(sender, "upload_method", "Pyrogram")
-                    if upload_method == "Telethon":
-                        await self.upload_with_telethon(file_path, sender, target_chat_id, final_caption, topic_id, edit_msg)
-                    else:
-                        await self.upload_with_pyrogram(file_path, sender, target_chat_id, final_caption, topic_id, edit_msg)
-
-        except Exception as e:
-            print(f"Public message copy error: {e}")
         finally:
-            if file_path:
-                await self.file_ops._cleanup_file(file_path)
+            if file_path and os.path.exists(file_path):
+                os.remove(file_path)
 
     async def _format_caption_with_custom(self, original_caption: str, sender: int, custom_caption: str) -> str:
         """Format caption with user preferences"""
