@@ -888,7 +888,7 @@ class SmartTelegramBot:
                         await self.upload_with_pyrogram(file_path, sender, target_chat_id, final_caption, topic_id, edit_msg)
 
         except Exception as e:
-            print(f"Public message copy error: {e}")
+    await app_client.send_message(sender, f"❌ Public message copy failed: {str(e)}")
         finally:
             if file_path:
                 await self.file_ops._cleanup_file(file_path)
