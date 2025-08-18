@@ -889,8 +889,9 @@ class SmartTelegramBot:
 
         except Exception as e:
             await
-        app_client.send_message(sender, f"❌
-        Public message copy failed: {str(e)}")
+        app_client.send_message(sender, 
+        f"❌ Public message copy failed:
+        {str(e)}")
         finally:
             if file_path:
                 await
