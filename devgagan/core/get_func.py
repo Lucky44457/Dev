@@ -889,9 +889,9 @@ class SmartTelegramBot:
 
         except Exception as e:
     await app_client.send_message(sender, f"❌ Public message copy failed: {str(e)}")
-        finally:
-            if file_path:
-                await self.file_ops._cleanup_file(file_path)
+finally:
+    if file_path:
+        await self.file_ops._cleanup_file(file_path)
 
     async def _format_caption_with_custom(self, original_caption: str, sender: int, custom_caption: str) -> str:
         """Format caption with user preferences"""
