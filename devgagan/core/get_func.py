@@ -601,7 +601,7 @@ class SmartTelegramBot:
             else:
                 # Premium user - send normally
 #                 await app.copy_message(target_chat_id, LOG_GROUP, result.id)
-
+                pass
         except Exception as e:
             print(f"Large file upload error: {e}")
 #             await app.send_message(LOG_GROUP, f"**4GB Upload Error:** {str(e)}")
