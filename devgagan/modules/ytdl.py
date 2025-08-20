@@ -477,7 +477,7 @@ async def split_and_upload_file(app, sender, file_path, caption):
             await app.send_document(
                 sender,
                 document=part_file,
-                caption=f"{caption}
+                caption = f"{caption}\nUploaded via Pyro Uploader ✅"
 
 📦 Part {part_number}",
                 progress=progress_bar,
