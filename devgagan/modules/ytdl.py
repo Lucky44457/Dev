@@ -450,10 +450,13 @@ async def split_and_upload_file(app, sender, file_path, caption):
             document=file_path,
             caption=caption,
             progress=progress_bar,
-            progress_args=("╭─────────────────────╮
-│      **__Pyro Uploader__**
-├─────────────────────", None, time.time())
-        )
+            progress_args=(
+    "╭─────────────────────╮\n"
+    "│      **__Pyro Uploader__**\n"
+    "├─────────────────────",
+    None,
+    time.time()
+            )
         os.remove(file_path)
         return
 
