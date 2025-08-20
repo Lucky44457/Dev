@@ -475,18 +475,24 @@ async def split_and_upload_file(app, sender, file_path, caption):
                 await pf.write(chunk)
 
             await app.send_document(
-                sender,
-                document=part_file,
-                caption = f"{caption}\nUploaded via Pyro Uploader ✅"
+    sender,
+    document=part_file,
+    caption=(
+        f"{caption}\n"
+        f"Uploaded via Pyro Uploader ✅\n\n"
+        f"📦 Part {part_number}"
+    ),
+    progress=progress_bar,
+    progress_args=(
+        "╭─────────────────────╮\n"
+        "│      **__Pyro Uploader__**\n"
+        "├─────────────────────",
+        None,
+        time.time(),
+    ),
+)
 
-📦 Part {part_number}",
-                progress=progress_bar,
-                progress_args=("╭─────────────────────╮
-│      **__Pyro Uploader__**
-├─────────────────────", None, time.time())
-            )
+os.remove(part_file)
+part_number += 1
 
-            os.remove(part_file)
-            part_number += 1
-
-    os.remove(file_path)
+os.remove(file_path)
