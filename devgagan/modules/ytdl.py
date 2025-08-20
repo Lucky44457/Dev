@@ -444,23 +444,24 @@ async def split_and_upload_file(app, sender, file_path, caption):
     MAX_TG_FILE_SIZE = int(1.9 * 1024 * 1024 * 1024)
 
     if file_size <= MAX_TG_FILE_SIZE:
-        # Direct upload, Telegram internally streams in chunks
+        # Direct upload
         await app.send_document(
             sender,
             document=file_path,
             caption=caption,
             progress=progress_bar,
             progress_args=(
-    "╭─────────────────────╮\n"
-    "│      **__Pyro Uploader__**\n"
-    "├─────────────────────",
-    None,
-    time.time()
-            )
+                "╭─────────────────────╮\n"
+                "│      **__Pyro Uploader__**\n"
+                "├─────────────────────",
+                None,
+                time.time(),
+            ),
+        )
         os.remove(file_path)
         return
 
-    # If file > Telegram limit, split manually into 500MB safe chunks
+    # If file > Telegram limit, split manually into 500MB chunks
     PART_SIZE = 500 * 1024 * 1024  # 500MB per part
     part_number = 1
 
@@ -475,24 +476,25 @@ async def split_and_upload_file(app, sender, file_path, caption):
                 await pf.write(chunk)
 
             await app.send_document(
-    sender,
-    document=part_file,
-    caption=(
-        f"{caption}\n"
-        f"Uploaded via Pyro Uploader ✅\n\n"
-        f"📦 Part {part_number}"
-    ),
-    progress=progress_bar,
-    progress_args=(
-        "╭─────────────────────╮\n"
-        "│      **__Pyro Uploader__**\n"
-        "├─────────────────────",
-        None,
-        time.time(),
-    ),
-)
+                sender,
+                document=part_file,
+                caption=(
+                    f"{caption}\n"
+                    f"Uploaded via Pyro Uploader ✅\n\n"
+                    f"📦 Part {part_number}"
+                ),
+                progress=progress_bar,
+                progress_args=(
+                    "╭─────────────────────╮\n"
+                    "│      **__Pyro Uploader__**\n"
+                    "├─────────────────────",
+                    None,
+                    time.time(),
+                ),
+            )
 
-os.remove(part_file)
-part_number += 1
+            os.remove(part_file)
+            part_number += 1
 
-os.remove(file_path)
+    os.remove(file_path)
+ 
