@@ -6,7 +6,13 @@ from os import getenv
 # VPS --- FILL COOKIES 🍪 in """ ... """ 
 
 INST_COOKIES = """
-# wtite up here insta cookies
+datr=wQ6maOGvef6jcDLkyr_TjaLd; 
+ds_user_id=75861865943; 
+csrftoken=pUOj0gtMsVITbYMPNrzQHVA4Mhib3QxX; 
+ig_did=00E2FF1D-F3C9-40DC-9D87-7B9F4EF842FE; 
+mid=aKYOwQABAAHm4vKbz9PMc1M97NOI; 
+sessionid=75861865943%3ABka7r4v7ISODro%3A26%3AAYdMOur-fyoxwEX8vSZ4ZSiQBMNMvPlekVrG7q4aQg; 
+rur="CLN\05475861865943\0541787249374:01fe44537cae11a4a86780fe7779407034112b7974d3523d5dfe0371b91261a9da277ad4"
 """
 
 YTUB_COOKIES = """
