@@ -108,7 +108,7 @@ help_pages = [
         "> 4. REPLACEWORDS : Can be used for words in deleted set via REMOVE WORDS\n"
         "> 5. RESET : To set the things back to default\n\n"
         "> You can set CUSTOM THUMBNAIL, PDF WATERMARK, VIDEO WATERMARK, SESSION-based login, etc. from settings\n\n"
-        "**__Powered by Team SPY__**"
+        "**__Powered by Blue Power__**"
     )
 ]
  
@@ -222,7 +222,7 @@ async def upgrade(client, message):
         [
             [InlineKeyboardButton("💳 Pay via UPI", url="upi://pay?pa=paytmqr28100505010116k1a3pwe9vg@paytm")],
             [InlineKeyboardButton("💱 Pay via Binance", url="https://t.me/yourbinancelink")],
-            [InlineKeyboardButton("👤 Contact Admin", url="https://t.me/kingofpatal")],
+            [InlineKeyboardButton("👤 Contact Admin", url="https://t.me/RESTRICTED0")],
         ]
     )
 
