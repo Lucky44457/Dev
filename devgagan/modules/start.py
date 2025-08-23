@@ -218,10 +218,14 @@ async def upgrade(client, message):
         "❤️ Thank you for supporting this project!"
     )
 
-    buttons = InlineKeyboardMarkup(
-    [
-        [InlineKeyboardButton("👤 Contact Admin", url="https://t.me/RESTRICTED0")]
-    ]
-)
+    @app.on_message(filters.command("upgrade"))
+async def upgrade(client, message):
+    upgrade_text = "💎 Upgrade to Premium to unlock all features."
 
-await message.reply_text(upgrade_text, reply_markup=buttons)
+    buttons = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("👤 Contact Admin", url="https://t.me/RESTRICTED0")]
+        ]
+    )
+
+    await message.reply_text(upgrade_text, reply_markup=buttons)
