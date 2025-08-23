@@ -7,8 +7,8 @@
 # Telegram: https://t.me/PdfsHubbb
 # YouTube: https://youtube.com/@dev_gagan
 # Created: 2025-01-11
-# Last Modified: 2025-01-11
-# Version: 2.0.5
+# Last Modified: 2025-08-23
+# Version: 2.0.6
 # License: MIT License
 # ---------------------------------------------------
 
@@ -48,7 +48,7 @@ async def set(_, message):
         BotCommand("session", "🧵 Generate Pyrogramv2 session"),
         BotCommand("settings", "⚙️ Personalize things"),
         BotCommand("stats", "📊 Get stats of the bot"),
-        BotCommand("plan", "🗓️ Check our premium plans"),
+        BotCommand("upgrade", "💎 Check our premium plans"),   # updated
         BotCommand("terms", "🥺 Terms and conditions"),
         BotCommand("speedtest", "🚅 Speed of server"),
         BotCommand("lock", "🔒 Protect channel from extraction"),
@@ -58,7 +58,6 @@ async def set(_, message):
     ])
  
     await message.reply("✅ Commands configured successfully!")
- 
  
  
  
@@ -90,7 +89,7 @@ help_pages = [
         "> Logout from the bot\n\n"
         "11. **/stats**\n"
         "> Get bot stats\n\n"
-        "12. **/plan**\n"
+        "12. **/upgrade**\n"
         "> Check premium plans\n\n"
         "13. **/speedtest**\n"
         "> Test the server speed (not available in v3)\n\n"
@@ -118,24 +117,17 @@ async def send_or_edit_help_page(_, message, page_number):
     if page_number < 0 or page_number >= len(help_pages):
         return
  
-     
     prev_button = InlineKeyboardButton("◀️ Previous", callback_data=f"help_prev_{page_number}")
     next_button = InlineKeyboardButton("Next ▶️", callback_data=f"help_next_{page_number}")
  
-     
     buttons = []
     if page_number > 0:
         buttons.append(prev_button)
     if page_number < len(help_pages) - 1:
         buttons.append(next_button)
  
-     
     keyboard = InlineKeyboardMarkup([buttons])
- 
-     
     await message.delete()
- 
-     
     await message.reply(
         help_pages[page_number],
         reply_markup=keyboard
@@ -147,24 +139,17 @@ async def help(client, message):
     join = await subscribe(client, message)
     if join == 1:
         return
- 
-     
     await send_or_edit_help_page(client, message, 0)
  
  
 @app.on_callback_query(filters.regex(r"help_(prev|next)_(\d+)"))
 async def on_help_navigation(client, callback_query):
     action, page_number = callback_query.data.split("_")[1], int(callback_query.data.split("_")[2])
- 
     if action == "prev":
         page_number -= 1
     elif action == "next":
         page_number += 1
- 
-     
     await send_or_edit_help_page(client, callback_query.message, page_number)
- 
-     
     await callback_query.answer()
  
  
@@ -182,66 +167,63 @@ async def terms(client, message):
      
     buttons = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("📋 See Plans", callback_data="see_plan")],
+            [InlineKeyboardButton("📋 See Plans", callback_data="see_upgrade")],
             [InlineKeyboardButton("💬 Contact Now", url="https://t.me/kingofpatal")],
         ]
     )
     await message.reply_text(terms_text, reply_markup=buttons)
  
  
-@app.on_message(filters.command("plan") & filters.private)
-async def plan(client, message):
-    plan_text = (
-        "> 💰 **Premium Price**:\n\n Starting from $2 or 200 INR accepted via **__Amazon Gift Card__** (terms and conditions apply).\n"
-        "📥 **Download Limit**: Users can download up to 100,000 files in a single batch command.\n"
-        "🛑 **Batch**: You will get two modes /bulk and /batch.\n"
-        "   - Users are advised to wait for the process to automatically cancel before proceeding with any downloads or uploads.\n\n"
-        "📜 **Terms and Conditions**: For further details and complete terms and conditions, please send /terms.\n"
+@app.on_message(filters.command("upgrade") & filters.private)
+async def upgrade(client, message):
+    upgrade_text = (
+        "💎 **Upgrade to Premium** 💎\n\n"
+        "🚀 **Premium Features**\n"
+        "✅ No verification every 2 hours ⏳\n"
+        "✅ Upload in bulk (up to 2000 files)\n"
+        "✅ Instantly skip the 300-second wait ⏱️\n"
+        "✅ Extract unlimited videos from channel/group/bots 🎥\n\n"
+        
+        "🆓 **Free Plan**\n"
+        "⏳ Validity: Unlimited\n"
+        "💵 Price: ₹0 / $0.00 USDT\n"
+        "❌ Limited features\n"
+        "❌ Limited downloads\n\n"
+        
+        "🔟 **10-Day Plan**\n"
+        "💵 Price: ₹50 🇮🇳 / $0.80 USDT\n"
+        "⏳ Validity: 10 days\n"
+        "💡 Approx ₹5/day\n"
+        "🎥 Extract unlimited videos\n\n"
+        
+        "💰 **20-Day Plan**\n"
+        "💵 Price: ₹80 🇮🇳 / $1.10 USDT\n"
+        "⏳ Validity: 20 days\n"
+        "💡 Approx ₹4/day\n"
+        "🎥 Extract unlimited videos\n\n"
+        
+        "🏆 **Monthly Plan (Best Value)**\n"
+        "💵 Price: ₹110 🇮🇳 / $1.80 USDT\n"
+        "⏳ Validity: 30 days\n"
+        "💡 Just ₹3.66/day\n"
+        "🎥 Extract unlimited videos\n\n"
+        
+        "📌 **Payment Methods**\n"
+        "💳 UPI ID: `paytmqr28100505010116k1a3pwe9vg@paytm`\n"
+        "💱 Crypto (Binance): Pay via Binance\n\n"
+        
+        "📬 **After Payment**\n"
+        "1️⃣ Send a payment screenshot below 👇\n"
+        "2️⃣ Contact Admin to activate your premium\n\n"
+        "❤️ Thank you for supporting this project!"
     )
-     
+
     buttons = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("📜 See Terms", callback_data="see_terms")],
-            [InlineKeyboardButton("💬 Contact Now", url="https://t.me/kingofpatal")],
+            [InlineKeyboardButton("💳 Pay via UPI", url="upi://pay?pa=paytmqr28100505010116k1a3pwe9vg@paytm")],
+            [InlineKeyboardButton("💱 Pay via Binance", url="https://t.me/yourbinancelink")],
+            [InlineKeyboardButton("👤 Contact Admin", url="https://t.me/kingofpatal")],
         ]
     )
-    await message.reply_text(plan_text, reply_markup=buttons)
- 
- 
-@app.on_callback_query(filters.regex("see_plan"))
-async def see_plan(client, callback_query):
-    plan_text = (
-        "> 💰**Premium Price**\n\n Starting from $2 or 200 INR accepted via **__Amazon Gift Card__** (terms and conditions apply).\n"
-        "📥 **Download Limit**: Users can download up to 100,000 files in a single batch command.\n"
-        "🛑 **Batch**: You will get two modes /bulk and /batch.\n"
-        "   - Users are advised to wait for the process to automatically cancel before proceeding with any downloads or uploads.\n\n"
-        "📜 **Terms and Conditions**: For further details and complete terms and conditions, please send /terms or click See Terms👇\n"
-    )
-     
-    buttons = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("📜 See Terms", callback_data="see_terms")],
-            [InlineKeyboardButton("💬 Contact Now", url="https://t.me/kingofpatal")],
-        ]
-    )
-    await callback_query.message.edit_text(plan_text, reply_markup=buttons)
- 
- 
-@app.on_callback_query(filters.regex("see_terms"))
-async def see_terms(client, callback_query):
-    terms_text = (
-        "> 📜 **Terms and Conditions** 📜\n\n"
-        "✨ We are not responsible for user deeds, and we do not promote copyrighted content. If any user engages in such activities, it is solely their responsibility.\n"
-        "✨ Upon purchase, we do not guarantee the uptime, downtime, or the validity of the plan. __Authorization and banning of users are at our discretion; we reserve the right to ban or authorize users at any time.__\n"
-        "✨ Payment to us **__does not guarantee__** authorization for the /batch command. All decisions regarding authorization are made at our discretion and mood.\n"
-    )
-     
-    buttons = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("📋 See Plans", callback_data="see_plan")],
-            [InlineKeyboardButton("💬 Contact Now", url="https://t.me/RESTRICTED0")],
-        ]
-    )
-    await callback_query.message.edit_text(terms_text, reply_markup=buttons)
- 
- 
+
+    await message.reply_text(upgrade_text, reply_markup=buttons)
