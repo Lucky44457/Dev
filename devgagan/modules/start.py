@@ -219,11 +219,9 @@ async def upgrade(client, message):
     )
 
     buttons = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("💳 Pay via UPI", url="upi://pay?pa=paytmqr28100505010116k1a3pwe9vg@paytm")],
-            [InlineKeyboardButton("💱 Pay via Binance", url="https://t.me/yourbinancelink")],
-            [InlineKeyboardButton("👤 Contact Admin", url="https://t.me/RESTRICTED0")],
-        ]
-    )
+    [
+        [InlineKeyboardButton("👤 Contact Admin", url="https://t.me/RESTRICTED0")]
+    ]
+)
 
-    await message.reply_text(upgrade_text, reply_markup=buttons)
+await message.reply_text(upgrade_text, reply_markup=buttons)
