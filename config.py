@@ -41,7 +41,7 @@ VISITOR_INFO1_LIVE=kt9TasJxM1o
 
 API_ID = int(getenv("API_ID", "25377714"))
 API_HASH = getenv("API_HASH", "ffc0d0e9d25947127bbf344e83a43f8c")
-BOT_TOKEN = getenv("BOT_TOKEN", "8114298470:AAEmh_KT04rgmRynXlr8kpzstMaSDz7KBTE")
+BOT_TOKEN = getenv("BOT_TOKEN", "8382178600:AAE3bGp9dIFaKcuOFCipworQpwyGnJU_IBs")
 OWNER_ID = list(map(int, getenv("OWNER_ID", "6197171929").split()))
 MONGO_DB = getenv("MONGO_DB", "mongodb+srv://jackend44:1CamIKdwrLDXuhns@cluster0.nlnbwph.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 LOG_GROUP = getenv("LOG_GROUP", "-1002874221733")
