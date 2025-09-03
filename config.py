@@ -45,7 +45,7 @@ BOT_TOKEN = getenv("BOT_TOKEN", "8114298470:AAEmh_KT04rgmRynXlr8kpzstMaSDz7KBTE"
 OWNER_ID = list(map(int, getenv("OWNER_ID", "6197171929").split()))
 MONGO_DB = getenv("MONGO_DB", "mongodb+srv://jackend44:1CamIKdwrLDXuhns@cluster0.nlnbwph.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 LOG_GROUP = getenv("LOG_GROUP", "-1002874221733")
-CHANNEL_ID = int(getenv("CHANNEL_ID", "-1002439642259"))
+CHANNEL_ID = int(getenv("CHANNEL_ID", "-1002730161000"))
 FREEMIUM_LIMIT = int(getenv("FREEMIUM_LIMIT", "100"))
 PREMIUM_LIMIT = int(getenv("PREMIUM_LIMIT", "500"))
 WEBSITE_URL = getenv("WEBSITE_URL", "shrinkforearn.in")
