@@ -39,8 +39,8 @@ PREF=f6=40000000&tz=Asia.Kolkata&f7=100;
 VISITOR_INFO1_LIVE=kt9TasJxM1o
 """
 
-API_ID = int(getenv("API_ID", "24677571"))
-API_HASH = getenv("API_HASH", "c54b4a68487bb161040f24ad7e11bc0e")
+API_ID = int(getenv("API_ID", "25377714"))
+API_HASH = getenv("API_HASH", "ffc0d0e9d25947127bbf344e83a43f8c")
 BOT_TOKEN = getenv("BOT_TOKEN", "8382178600:AAE3bGp9dIFaKcuOFCipworQpwyGnJU_IBs")
 OWNER_ID = list(map(int, getenv("OWNER_ID", "6197171929 5728458734 1838614580").split()))
 MONGO_DB = getenv("MONGO_DB", "mongodb+srv://jackend44:1CamIKdwrLDXuhns@cluster0.nlnbwph.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
