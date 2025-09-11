@@ -39,11 +39,11 @@ PREF=f6=40000000&tz=Asia.Kolkata&f7=100;
 VISITOR_INFO1_LIVE=kt9TasJxM1o
 """
 
-API_ID = int(getenv("API_ID", "25377714"))
-API_HASH = getenv("API_HASH", "ffc0d0e9d25947127bbf344e83a43f8c")
-BOT_TOKEN = getenv("BOT_TOKEN", "8382178600:AAE3bGp9dIFaKcuOFCipworQpwyGnJU_IBs")
+API_ID = int(getenv("API_ID", ""))
+API_HASH = getenv("API_HASH", "")
+BOT_TOKEN = getenv("BOT_TOKEN", "")
 OWNER_ID = list(map(int, getenv("OWNER_ID", "6197171929 5728458734 1838614580").split()))
-MONGO_DB = getenv("MONGO_DB", "mongodb+srv://jackend44:1CamIKdwrLDXuhns@cluster0.nlnbwph.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+MONGO_DB = getenv("MONGO_DB", "")
 LOG_GROUP = getenv("LOG_GROUP", "-1002874221733")
 CHANNEL_ID = int(getenv("CHANNEL_ID", "-1002730161000"))
 FREEMIUM_LIMIT = int(getenv("FREEMIUM_LIMIT", "100"))
