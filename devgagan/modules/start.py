@@ -209,7 +209,7 @@ async def upgrade(client, message):
         "🎥 Extract unlimited videos\n\n"
         
         "📌 **Payment Methods**\n"
-        "💳 UPI ID: `paytmqr28100505010116k1a3pwe9vg@paytm`\n"
+        "💳 UPI ID: `amaan.kazi@ptyes`\n"
         "💱 Crypto (Binance): Pay via Binance\n\n"
         
         "📬 **After Payment**\n"
