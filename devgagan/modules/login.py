@@ -39,9 +39,9 @@ async def logout_user(client, message):
     user_id = message.chat.id
     deleted = await delete_session_files(user_id)
     if deleted:
-        await message.reply("✅ Your session data and files have been cleared from memory and disk.")
+        await message.reply("✅ Logout Successful!")
     else:
-        await message.reply("✅ Logged out with flag -m")
+        await message.reply("✅ Logged out")
 
 # ---------------- Login ----------------
 @app.on_message(filters.command("login"))
