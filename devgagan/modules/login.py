@@ -9,23 +9,28 @@ from devgagan import app
 from devgagan.core.mongo import db
 from devgagan.core.func import subscribe
 import os
+import asyncio
 
 from config import API_ID as api_id, API_HASH as api_hash
 
+# -------------------- Helper: Delete old session silently --------------------
 async def delete_old_session(user_id):
     session_file = f"session_{user_id}.session"
-    # Delete old session file if exists
-    if os.path.exists(session_file):
-        os.remove(session_file)
-    # Delete old session string from DB
+    try:
+        if os.path.exists(session_file):
+            os.remove(session_file)
+    except Exception:
+        pass
     await db.sessions.delete_one({"user_id": user_id})
 
+# -------------------- Logout Command --------------------
 @app.on_message(filters.command("logout"))
 async def logout_user(client, message):
     user_id = message.chat.id
     await delete_old_session(user_id)
-    await message.reply("✅ Logout Successfull!")
+    await message.reply("✅ Logged out with flag -m")
 
+# -------------------- Login Command with Auto-Reconnect --------------------
 @app.on_message(filters.command("login"))
 async def login_user(_, message):
     joined = await subscribe(_, message)
@@ -34,9 +39,22 @@ async def login_user(_, message):
 
     user_id = message.chat.id
 
-    # Auto delete old session before new login
-    await delete_old_session(user_id)
+    # ---------------- Auto reconnect if session exists ----------------
+    existing = await db.sessions.find_one({"user_id": user_id})
+    if existing and existing.get("session_string"):
+        try:
+            client = TelegramClient(StringSession(existing["session_string"]), api_id, api_hash)
+            await client.connect()
+            # Test if session is valid
+            me = await client.get_me()
+            await client.disconnect()
+            await message.reply(f"✅ You are already logged in as {me.first_name}. No need to login again.")
+            return
+        except Exception:
+            # Corrupted session, proceed to normal login
+            await delete_old_session(user_id)
 
+    # ---------------- Normal login flow ----------------
     number_msg = await _.ask(user_id, "Enter your phone number with country code:\nExample: +19876543210", filters=filters.text)
     phone_number = number_msg.text
 
@@ -77,10 +95,10 @@ async def login_user(_, message):
             await client.disconnect()
             return
 
-    # Capture Telethon string session
+    # Capture Telethon StringSession
     string_session = client.session.save()
 
-    # Save new session string in MongoDB (upsert)
+    # Save/update session in MongoDB (upsert)
     await db.sessions.update_one(
         {"user_id": user_id},
         {"$set": {"session_string": string_session}},
@@ -88,4 +106,4 @@ async def login_user(_, message):
     )
 
     await client.disconnect()
-    await otp_msg.reply("✅ Login successful!")
+    await otp_msg.reply("✅ Login successful! Your session has been updated.")
