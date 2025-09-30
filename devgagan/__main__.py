@@ -19,6 +19,7 @@ from pyrogram import idle
 from devgagan.modules import ALL_MODULES
 from devgagan.core.mongo.plans_db import check_and_remove_expired_users
 from aiojobs import create_scheduler
+from devgagan.modules import ban
 
 # ----------------------------Bot-Start---------------------------- #
 
