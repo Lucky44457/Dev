@@ -41,7 +41,7 @@ async def logout_user(client, message):
     if deleted:
         await message.reply("✅ Logout Successful!")
     else:
-        await message.reply("✅ Logged out")
+        await message.reply("✅ Logout Successful!")
 
 # ---------------- Login ----------------
 @app.on_message(filters.command("login"))
