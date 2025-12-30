@@ -15,8 +15,9 @@
 import asyncio
 import logging
 import time
+import importlib
 
-from pyrogram import Client
+from pyrogram import Client, idle
 from pyrogram.enums import ParseMode
 from telethon.sync import TelegramClient
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -30,8 +31,10 @@ from config import (
     DEFAULT_SESSION
 )
 
+from devgagan.modules import ALL_MODULES
+
 # ---------------------------------------------------
-# Event Loop Setup (IMPORTANT – DO NOT CHANGE)
+# Event Loop Setup (DO NOT CHANGE)
 # ---------------------------------------------------
 
 loop = asyncio.new_event_loop()
@@ -75,7 +78,7 @@ telethon_client = TelegramClient(
 # OPTIONAL PYROGRAM USER CLIENTS
 # ---------------------------------------------------
 
-# PRO CLIENT (STRING)
+# PRO CLIENT
 if STRING:
     pro = Client(
         "ggbot",
@@ -86,7 +89,7 @@ if STRING:
 else:
     pro = None
 
-# USERBOT CLIENT (DEFAULT_SESSION)
+# USERBOT CLIENT
 if DEFAULT_SESSION:
     userrbot = Client(
         "userrbot",
@@ -113,7 +116,7 @@ async def setup_database():
     print("MongoDB TTL index created.")
 
 # ---------------------------------------------------
-# MAIN STARTUP FUNCTION (REAL BOT ENTRY)
+# MAIN STARTUP FUNCTION
 # ---------------------------------------------------
 
 async def restrict_bot():
@@ -122,7 +125,7 @@ async def restrict_bot():
     # MongoDB
     await setup_database()
 
-    # START MAIN BOT
+    # START BOT
     await app.start()
     getme = await app.get_me()
 
@@ -132,18 +135,25 @@ async def restrict_bot():
 
     print(f"Bot started as @{BOT_USERNAME}")
 
-    # START PRO CLIENT (IF EXISTS)
+    # LOAD ALL MODULES (HANDLERS)
+    for module in ALL_MODULES:
+        importlib.import_module("devgagan.modules." + module)
+
+    print("All modules loaded")
+
+    # START PRO CLIENT
     if pro:
         await pro.start()
         print("Pro client started")
 
-    # START USERBOT (IF EXISTS)
+    # START USERBOT
     if userrbot:
         await userrbot.start()
         print("Userbot started")
 
 # ---------------------------------------------------
-# RUN BOT (ONLY ONE EVENT LOOP)
+# RUN BOT (KEEP ALIVE)
 # ---------------------------------------------------
 
 loop.run_until_complete(restrict_bot())
+idle()
