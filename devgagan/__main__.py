@@ -1,7 +1,3 @@
-# ---------------------------------------------------
-# File Name: __main__.py
-# ---------------------------------------------------
-
 import asyncio
 import importlib
 import gc
@@ -9,13 +5,9 @@ import gc
 from pyrogram import idle
 from aiojobs import create_scheduler
 
-from devgagan import app, userbot
+from devgagan import app, userbot, telethon_client
 from devgagan.modules import ALL_MODULES
 from devgagan.core.mongo.plans_db import check_and_remove_expired_users
-
-# ---------------------------------------------------
-# EXPIRY CHECK
-# ---------------------------------------------------
 
 async def schedule_expiry_check():
     scheduler = await create_scheduler()
@@ -24,30 +16,33 @@ async def schedule_expiry_check():
         await asyncio.sleep(3600)
         gc.collect()
 
-# ---------------------------------------------------
-# MAIN BOOT
-# ---------------------------------------------------
+async def main():
+    # START BOT
+    await app.start()
+    print("Bot started")
 
-async def devggn_boot():
-
-    # LOAD ALL EXISTING MODULES (NO CHANGE)
-    for module in ALL_MODULES:
-        importlib.import_module("devgagan.modules." + module)
-
-    print("All modules loaded")
-
-    # ATTACH USERBOT LOGGER (NO MODULE EDIT)
+    # START USERBOT
     if userbot:
+        await userbot.start()
         from devgagan.userbot_logger import attach_logger
         attach_logger(userbot)
-        print("Userbot logger attached")
+        print("Userbot started + logger attached")
+
+    # START TELETHON
+    await telethon_client.start(bot_token=app.bot_token)
+
+    # LOAD MODULES AFTER START
+    for module in ALL_MODULES:
+        importlib.import_module(f"devgagan.modules.{module}")
 
     asyncio.create_task(schedule_expiry_check())
-    print("Auto removal started")
 
     await idle()
 
-# ---------------------------------------------------
+    # STOP
+    if userbot:
+        await userbot.stop()
+    await app.stop()
 
 if __name__ == "__main__":
-    asyncio.run(devggn_boot())
+    asyncio.run(main())
