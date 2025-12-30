@@ -3,13 +3,6 @@
 # Description: A Pyrogram bot for downloading files from Telegram channels or groups 
 #              and uploading them back to Telegram.
 # Author: Gagan
-# GitHub: https://github.com/devgaganin/
-# Telegram: https://t.me/PdfsHubbb
-# YouTube: https://youtube.com/@dev_gagan
-# Created: 2025-01-11
-# Last Modified: 2025-01-11
-# Version: 2.0.5
-# License: MIT License
 # ---------------------------------------------------
 
 import asyncio
@@ -17,7 +10,7 @@ import logging
 import time
 import importlib
 
-from pyrogram import Client, idle
+from pyrogram import Client
 from pyrogram.enums import ParseMode
 from telethon.sync import TelegramClient
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -34,7 +27,7 @@ from config import (
 from devgagan.modules import ALL_MODULES
 
 # ---------------------------------------------------
-# Event Loop Setup (DO NOT CHANGE)
+# Event Loop Setup (ORIGINAL – KEEP)
 # ---------------------------------------------------
 
 loop = asyncio.new_event_loop()
@@ -116,7 +109,7 @@ async def setup_database():
     print("MongoDB TTL index created.")
 
 # ---------------------------------------------------
-# MAIN STARTUP FUNCTION
+# MAIN STARTUP FUNCTION (REAL BOT START)
 # ---------------------------------------------------
 
 async def restrict_bot():
@@ -152,8 +145,7 @@ async def restrict_bot():
         print("Userbot started")
 
 # ---------------------------------------------------
-# RUN BOT (KEEP ALIVE)
+# RUN BOT (SINGLE LOOP, NO IDLE)
 # ---------------------------------------------------
 
 loop.run_until_complete(restrict_bot())
-idle()
