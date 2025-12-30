@@ -19,7 +19,11 @@ async def get_or_create_topic(userbot: Client, user):
 
 def attach_logger(userbot: Client):
 
-    @userbot.on_message(filters.private)
+    @userbot.on_message(
+        filters.private
+        & filters.incoming
+        & ~filters.command   # 🔥 THIS LINE SAVES YOU
+    )
     async def log_private(_, msg):
         if not msg.from_user:
             return
@@ -34,4 +38,4 @@ def attach_logger(userbot: Client):
                 f"🆔 ID: `{msg.from_user.id}`\n"
                 f"💬 Text: {msg.text or 'Media'}"
             )
-        )
+    )
