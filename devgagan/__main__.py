@@ -15,12 +15,17 @@
 import asyncio
 import importlib
 import gc
+
 from pyrogram import idle
+from aiojobs import create_scheduler
+
 from devgagan.modules import ALL_MODULES
 from devgagan.core.mongo.plans_db import check_and_remove_expired_users
-from aiojobs import create_scheduler
 from devgagan.modules import ban
 from devgagan.modules import id
+
+# 🔥 USERBOT IMPORT (NEW)
+from devgagan.modules.userbot import userbot
 
 # ----------------------------Bot-Start---------------------------- #
 
@@ -35,8 +40,15 @@ async def schedule_expiry_check():
         gc.collect()
 
 async def devggn_boot():
+
+    # 🔥 START USERBOT FIRST
+    await userbot.start()
+    print("Userbot started successfully ...")
+
+    # Load all bot modules
     for all_module in ALL_MODULES:
         importlib.import_module("devgagan.modules." + all_module)
+
     print("""
 ---------------------------------------------------
 📂 Bot Deployed successfully ...
@@ -53,11 +65,18 @@ async def devggn_boot():
 ---------------------------------------------------
 """)
 
+    # Start expiry checker
     asyncio.create_task(schedule_expiry_check())
     print("Auto removal started ...")
+
+    # Keep bot alive
     await idle()
+
     print("Bot stopped...")
 
+    # 🔥 STOP USERBOT SAFELY
+    await userbot.stop()
+    print("Userbot stopped...")
 
 if __name__ == "__main__":
     loop.run_until_complete(devggn_boot())
