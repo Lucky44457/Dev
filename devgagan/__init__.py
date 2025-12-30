@@ -15,7 +15,6 @@ logging.basicConfig(
 
 botStartTime = time.time()
 
-# MAIN BOT
 app = Client(
     "pyrobot",
     api_id=API_ID,
@@ -25,20 +24,18 @@ app = Client(
     parse_mode=ParseMode.MARKDOWN
 )
 
-# USERBOT (ONLY DEFINE)
-userbot = (
-    Client("userrbot", API_ID, API_HASH, session_string=DEFAULT_SESSION)
-    if DEFAULT_SESSION else None
-)
+if DEFAULT_SESSION:
+    userbot = Client(
+        "userrbot",
+        api_id=API_ID,
+        api_hash=API_HASH,
+        session_string=DEFAULT_SESSION
+    )
+else:
+    userbot = None
 
-# TELETHON (DEFINE ONLY)
-telethon_client = TelegramClient(
-    "telethon_session",
-    API_ID,
-    API_HASH
-)
+telethon_client = TelegramClient("telethon_session", API_ID, API_HASH)
 
-# MONGO
 tclient = AsyncIOMotorClient(MONGO_DB)
 tdb = tclient["telegram_bot"]
 token = tdb["tokens"]
